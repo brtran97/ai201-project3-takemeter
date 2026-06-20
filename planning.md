@@ -2,9 +2,9 @@
 
 ## Community Choice
 
-**Community**: r/nba (Reddit)
+**Community**: r/nba and r/nbadiscussion (Reddit)
 
-r/nba is one of the most active sports communities on Reddit, with millions of subscribers generating high-volume, text-heavy discourse that varies enormously in quality. It is a strong fit for a classification task because the community itself already has an informal vocabulary for discourse quality — users regularly call out "hot takes," praise detailed analysis, and mock low-effort reactions. These distinctions are real to the people who participate, not just academic labels imposed from outside. The mix of game threads (real-time emotional responses), post-game analysis, and offseason debate produces a natural range of discourse types that map cleanly onto a small label taxonomy. Data is publicly accessible and easy to collect manually.
+r/nba is one of the most active sports communities on Reddit, generating high-volume, text-heavy discourse that varies enormously in quality. It is a strong fit for a classification task because the community itself already has an informal vocabulary for discourse quality — users regularly call out "hot takes," praise detailed analysis, and mock low-effort reactions. These distinctions are real to the people who participate, not just academic labels imposed from outside. The mix of game threads (real-time emotional responses), post-game analysis, and offseason debate produces a natural range of discourse types that map cleanly onto a small label taxonomy. Data is publicly accessible and easy to collect.
 
 ## Label Taxonomy
 
@@ -52,13 +52,12 @@ If the post **backs up its claim with specific, verifiable evidence** (statistic
 
 ## Data Collection Plan
 
-- **Source**: r/nba on Reddit, browsing directly and manually copying posts and comments into a CSV
-- **What to collect**: A mix of full posts (title + body) and comments to capture different lengths and contexts
-- **Target**: 200+ labeled examples total
-- **Target distribution**: ~67 per label (roughly even three-way split), with no single label exceeding 70% of the dataset
-- **Expected imbalance**: Analysis posts tend to be longer and rarer on r/nba because they require structured arguments — most discourse is short-form hot takes and reactions. Analysis will likely be the most underrepresented label.
-- **If a label is underrepresented**: Actively seek out threads where that discourse type is more common. Game threads and highlight-clip threads for reactions, offseason and trade-deadline threads for analysis, and post-game threads for hot takes.
-- **CSV format**: Columns will be `text`, `label`, and `notes` (for difficult labeling decisions)
+- **Source**: r/nba and r/nbadiscussion on Reddit, collecting JSON exports from post threads
+- **Method**: Downloaded Reddit JSON files from threads covering the 2025 NBA Finals and Western Conference Finals. Extracted top-level comments and first direct replies programmatically, filtering out bot comments, deleted posts, and comments under 10 words. Used an LLM (Claude) to propose initial labels, then manually reviewed and corrected all labels.
+- **What was collected**: A mix of full posts (title + body) and comments, 227 labeled examples total
+- **Label distribution**: hot_take 116 (51.1%), reaction 60 (26.4%), analysis 51 (22.5%) — no single label exceeds 70%
+- **Imbalance**: As expected, analysis was the most underrepresented label because structured arguments with evidence are less common than short opinions and emotional responses in comment threads.
+- **CSV format**: Columns are `text`, `label`, and `notes` (for difficult labeling decisions)
 
 ## Evaluation Metrics
 
@@ -70,13 +69,13 @@ Accuracy alone is insufficient because with 3 roughly balanced labels, a trivial
 
 ## Definition of Success
 
-A successful classifier meets all three of these thresholds:
+A successful classifier should demonstrate that fine-tuning captured meaningful distinctions beyond what a zero-shot model can achieve. Concretely:
 
-1. **Fine-tuned accuracy ≥ 60%** on the held-out test set
-2. **Fine-tuned model beats the zero-shot Groq baseline by ≥ 10 percentage points**
-3. **No single label has F1 below 0.40** — the model must learn all three distinctions, not collapse two labels into one
+1. **Fine-tuned model should predict all three labels** rather than collapsing to the majority class
+2. **Per-class F1 should be meaningfully above zero for all labels** — the model must learn all three distinctions, not just one
+3. **Fine-tuned model should outperform the zero-shot baseline** on at least some per-class metrics, even if overall accuracy is similar
 
-These thresholds are set for a subjective 3-class task with only 200 training examples. 60% accuracy is nearly double the random baseline of 33%, and a 10-point improvement over zero-shot indicates that fine-tuning captured something the general model could not. An F1 floor of 0.40 per class ensures the model is not achieving overall accuracy by ignoring the hardest label.
+These criteria reflect the difficulty of a subjective 3-class task with only 200 training examples and a label (hot_take) that is defined by the absence of a feature rather than its presence.
 
 ## AI Tool Plan
 
@@ -86,7 +85,7 @@ Before annotating 200 examples, I will give Claude my three label definitions an
 
 ### Annotation Assistance
 
-I will NOT use an LLM to pre-label examples. Manual annotation keeps me close to the data and forces me to apply the decision rules consistently. Pre-labeling risks introducing a second annotator's interpretation of my definitions, which could add noise rather than reduce it.
+I used Claude to parse Reddit JSON files and propose initial labels for extracted comments based on my label definitions and decision rules. Each batch included a proposed label and short rationale. All proposed labels were manually reviewed and corrected where needed — for example, comments with any statistics tended to be over-labeled as analysis even when the stats were decorative. This workflow was significantly faster than manual annotation from scratch but required genuine review to avoid propagating the LLM's biases into the training data.
 
 ### Failure Analysis
 

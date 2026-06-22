@@ -165,13 +165,13 @@ Similar pattern to #2. The profanity and exclamatory tone triggered a reaction p
 
 | Post | Predicted Label | Confidence | Correct? |
 |------|----------------|------------|----------|
-| "It's the highest percentage of a team's points in a Finals game (47.9%) since MJ in game 6 in 1998" | analysis | 0.72 | Yes |
-| "perhaps we shouldnt be calling teams a dynasty after 1 chip lol" | hot_take | 0.41 | Yes |
-| "From a historical half-time Finals lead to an all-time choke job. This series is on crack." | reaction | 0.58 | Yes |
+| "Yes and this is a historical problem with read-and-react offenses. It's rather easy to scout eventually..." | analysis | 0.60 | Yes |
+| "The biggest issue for San Antonio going forward is his contract. They're paying him to be their second best player..." | analysis | 0.54 | Yes |
+| "This is the most insane game I can recall watching in a long time holy crap lol" | reaction | 0.42 | Yes |
+| "This swung the game. OKC probably wins without this block" | hot_take | 0.39 | Yes |
 | "Basketball referees might be the dumbest people on the planet" | reaction | 0.38 | No (true: hot_take) |
-| "That's great and all but we have no evidence that Fox will complete that 'maturation process'..." | analysis | 0.61 | No (true: hot_take) |
 
-The first prediction (analysis, 0.72 confidence) is reasonable because the post contains a specific, verifiable statistic (47.9%) and a direct historical comparison (MJ in 1998 Finals Game 6) — both hallmarks of analysis. The model correctly identified that the post is doing more than asserting an opinion; it is grounding a claim in evidence.
+The first prediction (analysis, 0.60 confidence) is reasonable because the post discusses a tactical concept (read-and-react offenses being easy to scout) and draws on specific basketball strategy knowledge with references to how the offense was exploited in the playoffs. The model correctly identified that the post is building a structured argument about team strategy, not just asserting an opinion.
 
 ## Reflection: What the Model Learned vs. What Was Intended
 

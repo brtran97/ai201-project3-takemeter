@@ -1,5 +1,7 @@
 # TakeMeter: Classifying r/nba Discourse Quality
 
+[Demo Video](https://drive.google.com/file/d/17jlt3GWJqTn0ykPtsAXFuNd-WzrX6jNi/view?usp=sharing)
+
 ## Community Choice
 
 **Community**: r/nba and r/nbadiscussion on Reddit
